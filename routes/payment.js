@@ -28,8 +28,8 @@ router.post("/create-subscription", async (req, res) => {
   const { fullName, phone, email, password } = req.body;
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10); //
-    console.log(hashedPassword); //
+    // const hashedPassword = await bcrypt.hash(password, 10); 
+    // console.log(hashedPassword); 
     const options = {
       plan_id: "plan_OBWrpv6aIRAf8m", // Replace with your actual plan ID from Razorpay
       customer_notify: 1,
@@ -62,7 +62,7 @@ router.post("/verify-subscription", async (req, res) => {
     fullName,
     phone,
     email,
-    password: hashedPassword,//
+    password,
   } = req.body;
 
   // console.log("Request body:", req.body);
@@ -173,6 +173,8 @@ router.post("/verify", async (req, res) => {
   // console.log("req body:", req.body);
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // check if the secret key is available before proceeding
     if (!secret) {
       console.error("RAZORPAY_SECRET is not defined");
@@ -201,7 +203,7 @@ router.post("/verify", async (req, res) => {
         fullName,
         phone,
         email,
-        password,
+        password: hashedPassword,
         status: "active", // Set status to active on successful payment
       });
 
@@ -236,7 +238,7 @@ const authenticateUser = async (email, password) => {
   if (user && await bcrypt.compare(password, user.password)) {
     return user;
   }
-  return null;  //
+  return null;  
 };
 
 // login api for generating token
