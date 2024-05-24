@@ -3,6 +3,9 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import "dotenv/config.js";
 import Payment from "../models/Payment.js";
+import jwt from "jsonwebtoken";
+const secretKey = "secretKey";
+
 
 import moment from "moment-timezone";
 
@@ -221,5 +224,69 @@ router.post("/verify", async (req, res) => {
     console.log(error);
   }
 });
+
+// -----------------------------------User login api-----------------------------------
+
+// Authenticate user function
+const authenticateUser = async (email, password) => {
+  const user = await Payment.findOne({ email, password });
+  return user;
+};
+
+// login api for generating token
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  console.log(req.body);
+
+  try {
+    const user = await authenticateUser(email, password);
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    // Generate JWT token
+    jwt.sign({ email: user.email }, secretKey, { expiresIn: "300s" }, (err, token) => {
+      if (err) {
+        return res.status(500).json({ message: "Internal server error" });
+      }
+      res.json({ token });
+    });
+  } catch (error) {
+    console.error("Error while logging in:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// profile api for giving the access
+router.post("/profile", verifyToken, (req, res) => {
+  jwt.verify(req.token, secretKey, (err, authData) => {
+    if (err) {
+      res.send({
+        message: "Invalid Login",
+      });
+    } else {
+      res.json({
+        message: "profile accessed",
+        authData,
+      });
+    }
+  });
+});
+
+// Middleware for verifying the token
+function verifyToken(req, res, next) {
+  const bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== "undefined") {
+    const bearer = bearerHeader.split(" ");
+    const token = bearer[1];
+    req.token = token;
+    next();
+  } else {
+    res.send({
+      result: "invalid login",
+    });
+  }
+}
+
 
 export default router;

@@ -30,8 +30,11 @@
 
 
 import mongoose from "mongoose";
+import "dotenv/config.js";
 
-const mongoURI = "mongodb+srv://vaibhav:1234@cluster0.24ik1dr.mongodb.net/recrutory?retryWrites=true&w=majority&appName=Cluster0";
+// const mongoURI = "mongodb+srv://vaibhav:1234@cluster0.24ik1dr.mongodb.net/recrutory?retryWrites=true&w=majority&appName=Cluster0";
+ const mongoURI = process.env.MONGO_DB_URI;
+
 
 
 const connectToMongo = async () => {
