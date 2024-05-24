@@ -4,6 +4,8 @@ const { Schema } = mongoose;
 const ModuleSchema = new Schema({
     title: String,
     content: String,
+    desc : String,
+    Resource: String
   });
   
   const ChapterSchema = new Schema({

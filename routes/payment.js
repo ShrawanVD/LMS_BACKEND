@@ -5,6 +5,7 @@ import "dotenv/config.js";
 import Payment from "../models/Payment.js";
 import jwt from "jsonwebtoken";
 const secretKey = "secretKey";
+import bcrypt from "bcryptjs";
 
 
 import moment from "moment-timezone";
@@ -27,6 +28,8 @@ router.post("/create-subscription", async (req, res) => {
   const { fullName, phone, email, password } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10); //
+    console.log(hashedPassword); //
     const options = {
       plan_id: "plan_OBWrpv6aIRAf8m", // Replace with your actual plan ID from Razorpay
       customer_notify: 1,
@@ -42,7 +45,7 @@ router.post("/create-subscription", async (req, res) => {
 
     const subscription = razorpayInstance.subscriptions.create(options);
     res.status(200).json({ subscription });
-    console.log(subscription);
+    // console.log(subscription);
   } catch (error) {
     console.error("Error creating subscription:", error);
     res.status(500).json({ message: "Failed to create subscription" });
@@ -59,10 +62,10 @@ router.post("/verify-subscription", async (req, res) => {
     fullName,
     phone,
     email,
-    password,
+    password: hashedPassword,//
   } = req.body;
 
-  console.log("Request body:", req.body);
+  // console.log("Request body:", req.body);
 
   // if (!razorpay_subscription_id || !razorpay_payment_id || !razorpay_signature ) {
   //   return res.status(400).json({ message: "All payment details are required" });
@@ -81,8 +84,8 @@ router.post("/verify-subscription", async (req, res) => {
       .update(sign.toString())
       .digest("hex");
 
-    console.log("Expected signature:", expectedSign);
-    console.log("Received signature:", razorpay_signature);
+    // console.log("Expected signature:", expectedSign);
+    // console.log("Received signature:", razorpay_signature);
 
     if (expectedSign === razorpay_signature) {
       const payment = new Payment({
@@ -97,7 +100,7 @@ router.post("/verify-subscription", async (req, res) => {
       });
 
       await payment.save();
-      console.log("Payment schema:", payment);
+      // console.log("Payment schema:", payment);
       return res.json({ message: "Subscription Payment Successful" });
     } else {
       return res.status(400).json({ message: "Transaction is not legit" });
@@ -131,7 +134,7 @@ router.post("/order", (req, res) => {
         return res.status(500).json({ message: "Something went wrong" });
       }
       res.status(200).json({ data: order });
-      console.log(order);
+      // console.log(order);
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -167,7 +170,7 @@ router.post("/verify", async (req, res) => {
       .json({ message: "All payment details are required" });
   }
 
-  console.log("req body:", req.body);
+  // console.log("req body:", req.body);
 
   try {
     // check if the secret key is available before proceeding
@@ -187,7 +190,7 @@ router.post("/verify", async (req, res) => {
 
     // comparing signatures
     const isAuthentic = expectedSign === razorpay_signature;
-    console.log(isAuthentic);
+    // console.log(isAuthentic);
 
     // if found same, save details in mongodb
     if (isAuthentic) {
@@ -202,14 +205,14 @@ router.post("/verify", async (req, res) => {
         status: "active", // Set status to active on successful payment
       });
 
-      console.log("payment schema is: " + payment);
+      // console.log("payment schema is: " + payment);
 
       // Redirect the user to the subscription link
       //  res.status(200).json({ subscriptionLink: "https://rzp.io/i/W5MQ1I3oM" });
 
       // displaying the date in IST which is stored by default in UTC by Moongose (for further use)
       const istDate = moment(payment.date).tz("Asia/Kolkata").format();
-      console.log("The IST Date for payment done is: " + istDate);
+      // console.log("The IST Date for payment done is: " + istDate);
 
       // Save Payment
       await payment.save();
@@ -230,13 +233,16 @@ router.post("/verify", async (req, res) => {
 // Authenticate user function
 const authenticateUser = async (email, password) => {
   const user = await Payment.findOne({ email, password });
-  return user;
+  if (user && await bcrypt.compare(password, user.password)) {
+    return user;
+  }
+  return null;  //
 };
 
 // login api for generating token
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
 
   try {
     const user = await authenticateUser(email, password);
@@ -245,7 +251,7 @@ router.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    jwt.sign({ email: user.email }, secretKey, { expiresIn: "300s" }, (err, token) => {
+    jwt.sign({ email: user.email,name: user.fullName }, secretKey, { expiresIn: "300s" }, (err, token) => {
       if (err) {
         return res.status(500).json({ message: "Internal server error" });
       }
