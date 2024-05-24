@@ -234,7 +234,7 @@ router.post("/verify", async (req, res) => {
 
 // Authenticate user function
 const authenticateUser = async (email, password) => {
-  const user = await Payment.findOne({ email, password });
+  const user = await Payment.findOne({ email });
   if (user && await bcrypt.compare(password, user.password)) {
     return user;
   }
