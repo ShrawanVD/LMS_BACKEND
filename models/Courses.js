@@ -16,6 +16,7 @@ const ModuleSchema = new Schema({
   const CourseSchema = new Schema({
     title: String,
     thumbnail: String,
+    language: String,
     duration: String,
     chapters: [ChapterSchema],
   });
