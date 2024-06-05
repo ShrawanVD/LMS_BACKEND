@@ -1,25 +1,18 @@
 import mongoose, { model } from "mongoose";
 const { Schema } = mongoose;
 
-const ModuleSchema = new Schema({
-    title: String,
-    content: String,
-    desc : String,
-    Resource: String
-  });
-  
-  const ChapterSchema = new Schema({
-    title: String,
-    modules: [ModuleSchema],
-  });
-  
-  const CourseSchema = new Schema({
-    title: String,
-    thumbnail: String,
-    language: String,
-    duration: String,
-    chapters: [ChapterSchema],
-  });
+const LessonSchema = new Schema({
+  language: { type: String, required: true },
+  level: { type: String, required: true },
+  lessonNumber: { type: Number, required: true },
+  lessonTitle: { type: String, required: true },
+  videos: [
+    {
+      title: { type: String, required: true },
+      url: { type: String, required: true }
+    }
+  ]
+});
   
 //   const Course = mongoose.model("Course", CourseSchema);
-export default model("Course", CourseSchema);
+export default model("Course", LessonSchema);
