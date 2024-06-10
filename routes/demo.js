@@ -28,8 +28,8 @@ router.get("/", (req, res) => {
 
 router.post("/subscription", async (req,res) => {
     const options = {
-        // plan_id: "plan_NxhIybqBiYaDx2", // live plan curiotory
-        plan_id: "plan_OJmqrAJKPTySg6", // demo plan curiotory
+        plan_id: "plan_NxhIybqBiYaDx2", // live plan curiotory
+        // plan_id: "plan_OJmqrAJKPTySg6", // demo plan curiotory
         customer_notify: 1,
         total_count: 12, // Total number of billing cycles, for a monthly subscription for a year
     }
