@@ -16,6 +16,13 @@ const razorpayInstance = new Razorpay({
 });
 
 
+// testing the api 
+router.get("/", (req, res) => {
+  res.status(200).send({
+    msg: "APIs are working successfully",
+  });
+});
+
 
 // ROUTE 1 : Create Order Api Using POST Method http://localhost:4000/api/payment/subscription
 
