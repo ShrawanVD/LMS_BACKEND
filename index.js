@@ -2,7 +2,8 @@
 import connectToMongo from './database/db.js';
 import express from 'express';
 import cors from 'cors';
-import payment from './routes/payment.js';
+import payment1 from './routes/demo.js';
+// import payment from './routes/payment.js';
 import course from './routes/course.js';
     
 connectToMongo();
@@ -18,7 +19,7 @@ app.get('/', (req, res) => {
     res.send('S Buying the course')
 })
 
-app.use('/api/payment', payment)
+app.use('/api/payment', payment1)
 app.use('/api',course);
     
 app.listen(port, () => {

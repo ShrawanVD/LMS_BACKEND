@@ -24,8 +24,8 @@ const secret = process.env.RAZORPAY_SECRET;
 
 // ROUTE 1 : Create Order Api Using POST Method http://localhost:4000/api/payment/create-subscription
 
-router.post("/create-subscription", async (req, res) => {
-  const { fullName, phone, email, password } = req.body;
+router.post("/create", async (req, res) => {
+  // const { amount } = req.body;
 
   try {
     // const hashedPassword = await bcrypt.hash(password, 10); 
@@ -34,17 +34,16 @@ router.post("/create-subscription", async (req, res) => {
       plan_id: "plan_OBWrpv6aIRAf8m", // Replace with your actual plan ID from Razorpay
       customer_notify: 1,
       total_count: 12, // Total number of billing cycles, for a monthly subscription for a year
-      notify_info: {
-        notify_phone: phone,
-        notify_email: email,
-      },
       // amount: Number(amount * 100),
       // currency: "INR",
       // receipt: crypto.randomBytes(10).toString("hex"),
     };
 
     const subscription = razorpayInstance.subscriptions.create(options);
-    res.status(200).json({ subscription });
+    res.status(200).json({ 
+      amount:"this is the amount",
+      subscription 
+    });
     // console.log(subscription);
   } catch (error) {
     console.error("Error creating subscription:", error);
@@ -133,7 +132,7 @@ router.post("/order", (req, res) => {
         console.log(error);
         return res.status(500).json({ message: "Something went wrong" });
       }
-      res.status(200).json({ data: order });
+      res.status(200).json({ success:true, data: order });
       // console.log(order);
     });
   } catch (error) {

@@ -1,18 +1,17 @@
 import mongoose, { model } from "mongoose";
+// import validator from "validator";
+// import { Validator } from "mongoose";
 // import moment from "moment-timezone";
 // import moment from 'moment';
 // import 'moment-timezone';   
 const { Schema } = mongoose;
 
 const PaymentSchema = new Schema({
-  razorpay_order_id: {
+ 
+  razorpay_subscription_id: {
     type: String,
     required: true,
   },
-  // razorpay_subscription_id: {
-  //   type: String,
-  //   required: true,
-  // },
   razorpay_payment_id: {
     type: String,
     required: true,
@@ -32,12 +31,16 @@ const PaymentSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
+    // validate: validator.isEmail,
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "Please enter your password"],
+    // minlength: [6,"Password must be at least 6 characters"],
+    select: false, 
   },
-  date: {
+  createdAt: {
     type: Date,
     default: Date.now(),
   },
@@ -47,3 +50,4 @@ const PaymentSchema = new Schema({
   },
 });
 export default model("payment", PaymentSchema);
+
