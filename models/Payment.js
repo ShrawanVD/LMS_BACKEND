@@ -36,9 +36,7 @@ const PaymentSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, "Please enter your password"],
-    // minlength: [6,"Password must be at least 6 characters"],
-    select: false, 
+    required: true
   },
   createdAt: {
     type: Date,
@@ -49,5 +47,5 @@ const PaymentSchema = new Schema({
     default: 'inactive',
   },
 });
-export default model("payment", PaymentSchema);
+export default model("payments", PaymentSchema);
 
