@@ -44,7 +44,7 @@ router.post("/subscription", async (req,res) => {
             success:true,
             data:order
         })
-        // console.log(order);
+        console.log(order);
     });
 
 })
@@ -64,45 +64,26 @@ router.post("/verification", async(req,res) =>{
         email,
         password,
       } = req.body;
-    
-      try {
 
-        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const sign = razorpay_subscription_id + "|" + razorpay_payment_id;
-        const expectedSign = crypto
-          .createHmac("sha256", process.env.RAZORPAY_SECRET)
-          .update(sign.toString())
-          .digest("hex");
-    
-        // console.log("Expected signature:", expectedSign);
-        // console.log("Received signature:", razorpay_signature);
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-        const payment = new Payment({
-            razorpay_subscription_id,
-            razorpay_payment_id,
-            razorpay_signature,
-            fullName,
-            phone,
-            email,
-            password: hashedPassword,
-            status: "active", // Set status to active on successful payment
-          });
-    
-          await payment.save();
-          // console.log("Payment schema:", payment);
-          return res.json({ message: "Subscription Payment Successful" });
-    
-        // if (expectedSign === razorpay_signature) {
-          
-        // } else {
-        //   return res.status(400).json({ message: "Transaction is not legit" });
-        // }
-      } catch (error) {
-        res.status(500).json({ message: "Internal Server Error" });
-        console.error("Error verifying subscription:", error);
-      }
+      const payment = new Payment({
+        razorpay_subscription_id,
+        razorpay_payment_id,
+        razorpay_signature,
+        fullName,
+        phone,
+        email,
+        password: hashedPassword,
+        status: "active", // Set status to active on successful payment
+      });
 
+      await payment.save();
+      console.log("Payment schema:", payment);
+      return res.json({ message: "Subscription Payment Successful" });
+    
+     
 })
 
 
