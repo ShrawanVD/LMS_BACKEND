@@ -28,8 +28,8 @@ router.get("/", (req, res) => {
 
 router.post("/subscription", async (req,res) => {
     const options = {
-        // plan_id: "plan_NxhIybqBiYaDx2", // live plan curiotory
-        plan_id: "plan_OJmqrAJKPTySg6", // demo plan curiotory
+        plan_id: "plan_NxhIybqBiYaDx2", // live plan curiotory
+        // plan_id: "plan_OJmqrAJKPTySg6", // demo plan curiotory
         customer_notify: 1,
         total_count: 12, // Total number of billing cycles, for a monthly subscription for a year
     }
@@ -44,7 +44,7 @@ router.post("/subscription", async (req,res) => {
             success:true,
             data:order
         })
-        console.log(order);
+        // console.log(order);
     });
 
 })
@@ -80,7 +80,7 @@ router.post("/verification", async(req,res) =>{
       });
 
       await payment.save();
-      console.log("Payment schema:", payment);
+      // console.log("Payment schema:", payment);
       return res.json({ message: "Subscription Payment Successful" });
     
      
@@ -162,7 +162,6 @@ router.post("/login", async (req, res) => {
   try {
     const user = await authenticateUser(email, password);
     if (!user) {
-      console.log("in user");
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
