@@ -18,6 +18,10 @@ router.post('/leads', async (req, res) => {
     name: req.body.name,
     email: req.body.email,
     phone: req.body.phone,
+    location: req.body.location,
+    currctc: req.body.currctc,
+    expctc: req.body.expctc,
+    noticeper: req.body.noticeper,
     date: req.body.date || new Date(),
     status: req.body.status || "not assigned",
     additionalFields: req.body.additionalFields || {}
@@ -55,27 +59,6 @@ router.get('/leads/:id', async (req, res) => {
   }
 });
 
-// PUT update a lead by id
-// router.put('/leads/:id', async (req, res) => {
-//   try {
-//     const lead = await Lead.findById(req.params.id);
-//     if (!lead) {
-//       return res.status(404).json({ message: 'Lead not found' });
-//     }
-
-//     lead.name = req.body.name || lead.name;
-//     lead.email = req.body.email || lead.email;
-//     lead.phone = req.body.phone || lead.phone;
-//     lead.date = req.body.date || lead.date;
-//     lead.status = req.body.status || lead.status;
-//     lead.additionalFields = req.body.additionalFields || lead.additionalFields;
-
-//     const updatedLead = await lead.save();
-//     res.json(updatedLead);
-//   } catch (err) {
-//     res.status(400).json({ message: err.message });
-//   }
-// });
 
 // DELETE lead by id
 router.delete('/leads/:id', async (req, res) => {
@@ -104,6 +87,11 @@ router.put('/leads/:id', async (req, res) => {
     lead.name = req.body.name || lead.name;
     lead.email = req.body.email || lead.email;
     lead.phone = req.body.phone || lead.phone;
+    lead.location = req.body.location || lead.location;
+    lead.currctc = req.body.currctc || lead.currctc;
+    lead.expctc = req.body.expctc || lead.expctc;
+    lead.noticeper = req.body.noticeper || lead.noticeper;
+    lead.phone = req.body.phone || lead.phone;
     lead.date = req.body.date || lead.date;
     lead.status = req.body.status || lead.status;
     lead.additionalFields = req.body.additionalFields || lead.additionalFields;
@@ -113,6 +101,10 @@ router.put('/leads/:id', async (req, res) => {
         name: lead.name,
         email: lead.email,
         phone: lead.phone,
+        location: lead.location,
+        currctc: lead.currctc,
+        expctc: lead.expctc,
+        noticeper: lead.noticeper,
         date: lead.date,
         status: lead.status,
         additionalFields: lead.additionalFields
