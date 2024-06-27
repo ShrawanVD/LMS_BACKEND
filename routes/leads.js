@@ -1,7 +1,7 @@
 import express from "express";
 import "dotenv/config.js";
 import Lead from "../models/Lead.js";
-import MasterLead from '../models/Masterlead.js';
+import MasterLead from "../models/Masterlead.js";
 
 const router = express.Router();
 
@@ -13,30 +13,45 @@ router.get("/", (req, res) => {
 });
 
 // Create a new lead
-router.post('/leads', async (req, res) => {
+router.post("/create", async (req, res) => {
   const lead = new Lead({
     name: req.body.name,
     email: req.body.email,
     phone: req.body.phone,
-    location: req.body.location,
-    currctc: req.body.currctc,
-    expctc: req.body.expctc,
-    noticeper: req.body.noticeper,
-    date: req.body.date || new Date(),
     status: req.body.status || "not assigned",
-    additionalFields: req.body.additionalFields || {}
+    language: req.body.language,
+    proficiencyLevel: req.body.proficiencyLevel,
+    jobStatus: req.body.jobStatus,
+    qualification: req.body.qualification,
+    industry: req.body.industry,
+    domain: req.body.domain,
+    location: req.body.location,
+    currentCTC: req.body.currentCTC,
+    expectedCTC: req.body.expectedCTC,
+    noticePeriod: req.body.noticePeriod,
+    wfh: req.body.wfh,
+    resumeLink: req.body.resumeLink,
+    linkedinLink: req.body.linkedinLink,
+    feedback: req.body.feedback,
+    company: req.body.company,
+    voiceNonVoice: req.body.voiceNonVoice,
+    placedBy: req.body.placedBy,
   });
-  
+
   try {
     const newLead = await lead.save();
+    console.log("NewLead is: " + newLead);
     res.status(201).json(newLead);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("Error saving lead:", err);
+    res
+      .status(500)
+      .json({ message: "Failed to create lead", error: err.message });
   }
 });
 
 // GET all leads
-router.get('/leads', async (req, res) => {
+router.get("/leads", async (req, res) => {
   try {
     const leads = await Lead.find();
     res.json(leads);
@@ -46,7 +61,7 @@ router.get('/leads', async (req, res) => {
 });
 
 // GET lead by id
-router.get('/leads/:id', async (req, res) => {
+router.get("/leads/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const lead = await Lead.findById(id);
@@ -59,72 +74,107 @@ router.get('/leads/:id', async (req, res) => {
   }
 });
 
-
 // DELETE lead by id
-router.delete('/leads/:id', async (req, res) => {
+router.delete("/leads/:id", async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id);
+    console.log("Found lead:", lead); // Add this line for debugging
+
     if (!lead) {
-      return res.status(404).json({ message: 'Lead not found' });
+      return res.status(404).json({ message: "Lead not found" });
     }
 
-    await lead.remove();
-    res.json({ message: 'Lead deleted successfully' });
+    await lead.deleteOne();
+    res.json({ message: "Lead deleted successfully" });
+    console.log("Delete lead");
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-
-router.put('/leads/:id', async (req, res) => {
+// PUT particular lead
+router.put("/leads/:id", async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id);
     if (!lead) {
-      return res.status(404).json({ message: 'Lead not found' });
+      return res.status(404).json({ message: "Lead not found" });
     }
 
     const oldStatus = lead.status;
+
+    // updating lead with new entries
     lead.name = req.body.name || lead.name;
     lead.email = req.body.email || lead.email;
     lead.phone = req.body.phone || lead.phone;
-    lead.location = req.body.location || lead.location;
-    lead.currctc = req.body.currctc || lead.currctc;
-    lead.expctc = req.body.expctc || lead.expctc;
-    lead.noticeper = req.body.noticeper || lead.noticeper;
-    lead.phone = req.body.phone || lead.phone;
-    lead.date = req.body.date || lead.date;
     lead.status = req.body.status || lead.status;
-    lead.additionalFields = req.body.additionalFields || lead.additionalFields;
+    lead.language = req.body.language || lead.language;
+    lead.proficiencyLevel = req.body.proficiencyLevel || lead.proficiencyLevel;
+    lead.jobStatus = req.body.jobStatus || lead.jobStatus;
+    lead.qualification = req.body.qualification || lead.qualification;
+    lead.industry = req.body.industry || lead.industry;
+    lead.domain = req.body.domain || lead.domain;
+    lead.location = req.body.location || lead.location;
+    lead.currentCTC = req.body.currentCTC || lead.currentCTC;
+    lead.expectedCTC = req.body.expectedCTC || lead.expectedCTC;
+    lead.noticePeriod = req.body.noticePeriod || lead.noticePeriod;
+    lead.wfh = req.body.wfh || lead.wfh;
+    lead.resumeLink = req.body.resumeLink || lead.resumeLink;
+    lead.linkedinLink = req.body.linkedinLink || lead.linkedinLink;
+    lead.feedback = req.body.feedback || lead.feedback;
+    lead.company = req.body.company || lead.company;
+    lead.voiceNonVoice = req.body.voiceNonVoice || lead.voiceNonVoice;
+    lead.placedBy = req.body.placedBy || lead.placedBy;
 
-    if (lead.status === "done" && oldStatus !== "done") {
+    // if status = done, delete from lead data and add into masterlead data
+    if (lead.status === "Done" || "done" || "DONE" && oldStatus !== "done") {
+
       const masterLead = new MasterLead({
         name: lead.name,
         email: lead.email,
         phone: lead.phone,
-        location: lead.location,
-        currctc: lead.currctc,
-        expctc: lead.expctc,
-        noticeper: lead.noticeper,
-        date: lead.date,
         status: lead.status,
-        additionalFields: lead.additionalFields
+        language: lead.language,
+        proficiencyLevel: lead.proficiencyLevel,
+        jobStatus: lead.jobStatus,
+        qualification: lead.qualification,
+        industry: lead.industry,
+        domain: lead.domain,
+        location: lead.location,
+        currentCTC: lead.currentCTC,
+        expectedCTC: lead.expectedCTC,
+        noticePeriod: lead.noticePeriod,
+        wfh: lead.wfh,
+        resumeLink: lead.resumeLink,
+        linkedinLink: lead.linkedinLink,
+        feedback: lead.feedback,
+        company: lead.company,
+        voiceNonVoice: lead.voiceNonVoice,
+        placedBy: lead.placedBy
       });
 
       try {
         const savedMasterLead = await masterLead.save();
         await Lead.findByIdAndDelete(lead._id); // Delete the lead from the Lead collection
-        return res.json({ message: 'Lead moved to master collection and deleted from lead collection', masterLead: savedMasterLead });
+        return res.json({
+          message:
+            "Lead moved to master collection and deleted from lead collection",
+          masterLead: savedMasterLead,
+        });
       } catch (err) {
-        return res.status(500).json({ message: 'Error saving to master collection or deleting lead', error: err.message });
+        console.log("error in transferring data into the masterlead");
+        return res.status(500).json({
+          message: "Error saving to master collection or deleting lead",
+          error: err.message,
+        });
       }
     }
 
+    // if changes does not include change in status, keep it in lead data once updated
     const updatedLead = await lead.save();
     res.json(updatedLead);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-}); 
-
+});
 
 export default router;
