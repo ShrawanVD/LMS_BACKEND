@@ -21,7 +21,7 @@ router.post("/create", async (req, res) => {
     status: req.body.status || "not assigned",
     language: req.body.language,
     proficiencyLevel: req.body.proficiencyLevel,
-    jobStatus: req.body.jobStatus,
+    jbStatus: req.body.jbStatus,
     qualification: req.body.qualification,
     industry: req.body.industry,
     domain: req.body.domain,
@@ -109,7 +109,7 @@ router.put("/leads/:id", async (req, res) => {
     lead.status = req.body.status || lead.status;
     lead.language = req.body.language || lead.language;
     lead.proficiencyLevel = req.body.proficiencyLevel || lead.proficiencyLevel;
-    lead.jobStatus = req.body.jobStatus || lead.jobStatus;
+    lead.jbStatus = req.body.jbStatus || lead.jbStatus;
     lead.qualification = req.body.qualification || lead.qualification;
     lead.industry = req.body.industry || lead.industry;
     lead.domain = req.body.domain || lead.domain;
@@ -134,7 +134,7 @@ router.put("/leads/:id", async (req, res) => {
         status: lead.status,
         language: lead.language,
         proficiencyLevel: lead.proficiencyLevel,
-        jobStatus: lead.jobStatus,
+        jbStatus: lead.jbStatus,
         qualification: lead.qualification,
         industry: lead.industry,
         domain: lead.domain,

@@ -2,13 +2,15 @@ import mongoose, { model } from "mongoose";
 const { Schema } = mongoose;
 
 const MasterLeadSchema = new Schema({
+  // Defining fixed fields
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
   date: { type: Date, default: Date.now },
-  status: { type: String, required: true },
+  status: { type: String, default: "not assigned" },
   language: { type: String, required: true },
   proficiencyLevel: { type: String },
+  jbStatus: { type: String },
   qualification: { type: String },
   industry: { type: String },
   domain: { type: String },
@@ -22,10 +24,7 @@ const MasterLeadSchema = new Schema({
   feedback: { type: String },
   company: { type: String },
   voiceNonVoice: { type: String },
-  placedBy: { type: String }
+  placedBy: { type: String },
 });
 
 export default model("MasterLead", MasterLeadSchema);
-
-
-
