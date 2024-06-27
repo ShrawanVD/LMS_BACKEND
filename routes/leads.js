@@ -126,8 +126,7 @@ router.put("/leads/:id", async (req, res) => {
     lead.placedBy = req.body.placedBy || lead.placedBy;
 
     // if status = done, delete from lead data and add into masterlead data
-    if (lead.status === "Done" || "done" || "DONE" && oldStatus !== "done") {
-
+    if ((lead.status === "done" || lead.status === "Done" || lead.status === "DONE") && oldStatus !== lead.status) {
       const masterLead = new MasterLead({
         name: lead.name,
         email: lead.email,
@@ -149,15 +148,14 @@ router.put("/leads/:id", async (req, res) => {
         feedback: lead.feedback,
         company: lead.company,
         voiceNonVoice: lead.voiceNonVoice,
-        placedBy: lead.placedBy
+        placedBy: lead.placedBy,
       });
 
       try {
         const savedMasterLead = await masterLead.save();
         await Lead.findByIdAndDelete(lead._id); // Delete the lead from the Lead collection
         return res.json({
-          message:
-            "Lead moved to master collection and deleted from lead collection",
+          message: "Lead moved to master collection and deleted from lead collection",
           masterLead: savedMasterLead,
         });
       } catch (err) {
@@ -167,14 +165,17 @@ router.put("/leads/:id", async (req, res) => {
           error: err.message,
         });
       }
-    }
-
+    } 
+    
     // if changes does not include change in status, keep it in lead data once updated
-    const updatedLead = await lead.save();
-    res.json(updatedLead);
+    else {
+      const updatedLead = await lead.save();
+      res.json(updatedLead);
+    }
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
+
 
 export default router;
