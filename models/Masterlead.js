@@ -3,18 +3,21 @@ const { Schema } = mongoose;
 
 const MasterLeadSchema = new Schema({
   // Defining fixed fields
-  name: { type: String, required: true },
+  fName: { type: String, required: true },
+  lName: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
   date: { type: Date, default: Date.now },
   status: { type: String, default: "not assigned" },
-  language: { type: String, required: true },
+  lType: { type: String, required: true },
+  language: { type: Array, required: true },
   proficiencyLevel: { type: String },
   jbStatus: { type: String },
   qualification: { type: String },
   industry: { type: String },
   domain: { type: String },
-  location: { type: String },
+  cLocation: { type: String },
+  pLocation: { type: String },
   currentCTC: { type: Number },
   expectedCTC: { type: Number },
   noticePeriod: { type: String },
@@ -22,8 +25,10 @@ const MasterLeadSchema = new Schema({
   resumeLink: { type: String },
   linkedinLink: { type: String },
   feedback: { type: String },
+  remark: { type: String },
   company: { type: String },
   voiceNonVoice: { type: String },
+  source: { type: String },
   placedBy: { type: String },
 });
 

@@ -15,17 +15,20 @@ router.get("/", (req, res) => {
 // Create a new lead
 router.post("/create", async (req, res) => {
   const lead = new Lead({
-    name: req.body.name,
+    fName: req.body.fName,
+    lName: req.body.lName,
     email: req.body.email,
     phone: req.body.phone,
     status: req.body.status || "not assigned",
+    lType: req.body.lType,
     language: req.body.language,
     proficiencyLevel: req.body.proficiencyLevel,
     jbStatus: req.body.jbStatus,
     qualification: req.body.qualification,
     industry: req.body.industry,
     domain: req.body.domain,
-    location: req.body.location,
+    cLocation: req.body.cLocation,
+    pLocation: req.body.pLocation,
     currentCTC: req.body.currentCTC,
     expectedCTC: req.body.expectedCTC,
     noticePeriod: req.body.noticePeriod,
@@ -33,8 +36,10 @@ router.post("/create", async (req, res) => {
     resumeLink: req.body.resumeLink,
     linkedinLink: req.body.linkedinLink,
     feedback: req.body.feedback,
+    remark: req.body.remark,
     company: req.body.company,
     voiceNonVoice: req.body.voiceNonVoice,
+    source: req.body.source,
     placedBy: req.body.placedBy,
   });
 
@@ -103,17 +108,20 @@ router.put("/leads/:id", async (req, res) => {
     const oldStatus = lead.status;
 
     // updating lead with new entries
-    lead.name = req.body.name || lead.name;
+    lead.fName = req.body.fName || lead.fName;
+    lead.lName = req.body.lName || lead.lName;
     lead.email = req.body.email || lead.email;
     lead.phone = req.body.phone || lead.phone;
     lead.status = req.body.status || lead.status;
+    lead.lType = req.body.lType || lead.lType;
     lead.language = req.body.language || lead.language;
     lead.proficiencyLevel = req.body.proficiencyLevel || lead.proficiencyLevel;
     lead.jbStatus = req.body.jbStatus || lead.jbStatus;
     lead.qualification = req.body.qualification || lead.qualification;
     lead.industry = req.body.industry || lead.industry;
     lead.domain = req.body.domain || lead.domain;
-    lead.location = req.body.location || lead.location;
+    lead.cLocation = req.body.cLocation || lead.cLocation;
+    lead.pLocation = req.body.pLocation || lead.pLocation;
     lead.currentCTC = req.body.currentCTC || lead.currentCTC;
     lead.expectedCTC = req.body.expectedCTC || lead.expectedCTC;
     lead.noticePeriod = req.body.noticePeriod || lead.noticePeriod;
@@ -121,24 +129,29 @@ router.put("/leads/:id", async (req, res) => {
     lead.resumeLink = req.body.resumeLink || lead.resumeLink;
     lead.linkedinLink = req.body.linkedinLink || lead.linkedinLink;
     lead.feedback = req.body.feedback || lead.feedback;
+    lead.remark = req.body.remark || lead.remark;
     lead.company = req.body.company || lead.company;
     lead.voiceNonVoice = req.body.voiceNonVoice || lead.voiceNonVoice;
+    lead.source = req.body.source || lead.source;
     lead.placedBy = req.body.placedBy || lead.placedBy;
 
     // if status = done, delete from lead data and add into masterlead data
-    if ((lead.status === "done" || lead.status === "Done" || lead.status === "DONE") && oldStatus !== lead.status) {
+    if ((lead.status === "selected" || lead.status === "Selected" || lead.status === "SELECTED") && oldStatus !== lead.status) {
       const masterLead = new MasterLead({
-        name: lead.name,
+        fName: lead.fName,
+        lName: lead.lName,
         email: lead.email,
         phone: lead.phone,
         status: lead.status,
+        lType: lead.lType,
         language: lead.language,
         proficiencyLevel: lead.proficiencyLevel,
         jbStatus: lead.jbStatus,
         qualification: lead.qualification,
         industry: lead.industry,
         domain: lead.domain,
-        location: lead.location,
+        cLocation: lead.cLocation,
+        pLocation: lead.pLocation,
         currentCTC: lead.currentCTC,
         expectedCTC: lead.expectedCTC,
         noticePeriod: lead.noticePeriod,
@@ -146,8 +159,10 @@ router.put("/leads/:id", async (req, res) => {
         resumeLink: lead.resumeLink,
         linkedinLink: lead.linkedinLink,
         feedback: lead.feedback,
+        remark: lead.remark,
         company: lead.company,
         voiceNonVoice: lead.voiceNonVoice,
+        source: lead.source,
         placedBy: lead.placedBy,
       });
 
