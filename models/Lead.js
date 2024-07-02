@@ -18,6 +18,7 @@ const LeadSchema = new Schema({
   qualification: { type: String },
   industry: { type: String },
   domain: { type: String },
+  exp: { type: String },
   cLocation: { type: String },
   pLocation: { type: String },
   currentCTC: { type: Number },

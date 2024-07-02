@@ -27,6 +27,7 @@ router.post("/create", async (req, res) => {
     qualification: req.body.qualification,
     industry: req.body.industry,
     domain: req.body.domain,
+    exp: req.body.exp,
     cLocation: req.body.cLocation,
     pLocation: req.body.pLocation,
     currentCTC: req.body.currentCTC,
@@ -120,6 +121,7 @@ router.put("/leads/:id", async (req, res) => {
     lead.qualification = req.body.qualification || lead.qualification;
     lead.industry = req.body.industry || lead.industry;
     lead.domain = req.body.domain || lead.domain;
+    lead.exp = req.body.exp || lead.exp;
     lead.cLocation = req.body.cLocation || lead.cLocation;
     lead.pLocation = req.body.pLocation || lead.pLocation;
     lead.currentCTC = req.body.currentCTC || lead.currentCTC;
@@ -150,6 +152,7 @@ router.put("/leads/:id", async (req, res) => {
         qualification: lead.qualification,
         industry: lead.industry,
         domain: lead.domain,
+        exp: lead.exp,
         cLocation: lead.cLocation,
         pLocation: lead.pLocation,
         currentCTC: lead.currentCTC,
