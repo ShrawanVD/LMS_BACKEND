@@ -2,7 +2,8 @@
 import connectToMongo from './database/db.js';
 import express from 'express';
 import cors from 'cors';
-import payment1 from './routes/demo.js';
+import payment1 from './routes/payment.js';
+// import payment1 from './routes/demo.js';
 import course from './routes/course.js';
 import lead from "./routes/leads.js";
 
