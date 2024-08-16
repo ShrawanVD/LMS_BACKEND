@@ -112,17 +112,51 @@ router.post("/verify-subscription", async (req, res) => {
 
 // -------------------------------------- ONE TIME PAYMENT ------------------------------------
 
+
+// ROUTE 0 : Validate Coupon POST /api/coupon/validate
+router.post("/coupon/validate", async (req, res) => {
+
+  console.log("inside the apply coupon");
+
+  const { couponCode, originalAmount } = req.body;
+
+  console.log("coupon code is: " + couponCode);
+  console.log("original Amount is: " + originalAmount);
+
+  // Example coupon logic (in real scenarios, this would be fetched from a database)
+  const validCoupons = {
+    "DISCOUNT50": 50,  // ₹50 discount
+    "SAVE100": 100,    // ₹100 discount
+  };
+
+  if (validCoupons[couponCode]) {
+    const discountAmount = validCoupons[couponCode];
+    const discountedAmount = originalAmount - discountAmount;
+    
+    // Ensure amount doesn't go negative
+    const finalAmount = Math.max(discountedAmount, 0);
+
+    console.log("final amount is: " + finalAmount);
+
+    return res.json({
+      valid: true,
+      discountAmount,
+      finalAmount,
+    });
+  }
+
+  res.json({ valid: false, message: "Invalid or expired coupon code" });
+});
+
+
 // ROUTE 1 : Create Order Api Using POST Method http://localhost:4000/api/payment/order
 
 router.post("/order", (req, res) => {
-  // amount is fetched
-  const { amount } = req.body;
-
-  // try catch statement
+  const { amount } = req.body; // This amount should now be the discounted amount if a coupon is applied.
 
   try {
     const options = {
-      amount: Number(amount * 100),
+      amount: Number(amount * 100), // Amount in paise (1 Rs = 100 paise)
       currency: "INR",
       receipt: crypto.randomBytes(10).toString("hex"),
     };
@@ -132,14 +166,40 @@ router.post("/order", (req, res) => {
         console.log(error);
         return res.status(500).json({ message: "Something went wrong" });
       }
-      res.status(200).json({ success:true, data: order });
-      // console.log(order);
+      res.status(200).json({ success: true, data: order });
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
-    console.log(error);
   }
 });
+
+
+// router.post("/order", (req, res) => {
+//   // amount is fetched
+//   const { amount } = req.body;
+
+//   // try catch statement
+
+//   try {
+//     const options = {
+//       amount: Number(amount * 100),
+//       currency: "INR",
+//       receipt: crypto.randomBytes(10).toString("hex"),
+//     };
+
+//     razorpayInstance.orders.create(options, (error, order) => {
+//       if (error) {
+//         console.log(error);
+//         return res.status(500).json({ message: "Something went wrong" });
+//       }
+//       res.status(200).json({ success:true, data: order });
+//       // console.log(order);
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//     console.log(error);
+//   }
+// });
 
 // ROUTE 2 : Create Verify Api Using POST Method http://localhost:4000/api/payment/verify
 
