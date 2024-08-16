@@ -138,6 +138,12 @@ router.post("/coupon/validate", async (req, res) => {
 
     console.log("final amount is: " + finalAmount);
 
+    console.log("Returning response:", {
+      valid: true,
+      discountAmount,
+      finalAmount,
+    });
+
     return res.json({
       valid: true,
       discountAmount,
