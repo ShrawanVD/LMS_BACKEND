@@ -18,6 +18,7 @@ const razorpayInstance = new Razorpay({
   key_secret: process.env.RAZORPAY_SECRET,
 });
 
+
 const secret = process.env.RAZORPAY_SECRET;
 
 // ---------------------------------- RECURRING SUBSCRIPTIONS ------------------------------
@@ -114,45 +115,45 @@ router.post("/verify-subscription", async (req, res) => {
 
 
 // ROUTE 0 : Validate Coupon POST /api/coupon/validate
-router.post("/coupon/validate", async (req, res) => {
+// router.post("/coupon/validate", async (req, res) => {
 
-  console.log("inside the apply coupon");
+//   console.log("inside the apply coupon");
 
-  const { couponCode, originalAmount } = req.body;
+//   const { couponCode, originalAmount } = req.body;
 
-  console.log("coupon code is: " + couponCode);
-  console.log("original Amount is: " + originalAmount);
+//   console.log("coupon code is: " + couponCode);
+//   console.log("original Amount is: " + originalAmount);
 
-  // Example coupon logic (in real scenarios, this would be fetched from a database)
-  const validCoupons = {
-    "DISCOUNT50": 50,  // ₹50 discount
-    "SAVE100": 100,    // ₹100 discount
-  };
+//   // Example coupon logic (in real scenarios, this would be fetched from a database)
+//   const validCoupons = {
+//     "DISCOUNT50": 50,  // ₹50 discount
+//     "SAVE100": 100,    // ₹100 discount
+//   };
 
-  if (validCoupons[couponCode]) {
-    const discountAmount = validCoupons[couponCode];
-    const discountedAmount = originalAmount - discountAmount;
+//   if (validCoupons[couponCode]) {
+//     const discountAmount = validCoupons[couponCode];
+//     const discountedAmount = originalAmount - discountAmount;
     
-    // Ensure amount doesn't go negative
-    const finalAmount = Math.max(discountedAmount, 0);
+//     // Ensure amount doesn't go negative
+//     const finalAmount = Math.max(discountedAmount, 0);
 
-    console.log("final amount is: " + finalAmount);
+//     console.log("final amount is: " + finalAmount);
 
-    console.log("Returning response:", {
-      valid: true,
-      discountAmount,
-      finalAmount,
-    });
+//     console.log("Returning response:", {
+//       valid: true,
+//       discountAmount,
+//       finalAmount,
+//     });
 
-    return res.json({
-      valid: true,
-      discountAmount,
-      finalAmount,
-    });
-  }
+//     return res.json({
+//       valid: true,
+//       discountAmount,
+//       finalAmount,
+//     });
+//   }
 
-  res.json({ valid: false, message: "Invalid or expired coupon code" });
-});
+//   res.json({ valid: false, message: "Invalid or expired coupon code" });
+// });
 
 
 // ROUTE 1 : Create Order Api Using POST Method http://localhost:4000/api/payment/order
@@ -160,11 +161,18 @@ router.post("/coupon/validate", async (req, res) => {
 router.post("/order", (req, res) => {
   const { amount } = req.body; // This amount should now be the discounted amount if a coupon is applied.
 
+  console.log("key is: " + process.env.RAZORPAY_KEY_ID);
+  console.log("secret is: " + process.env.RAZORPAY_SECRET);
+
+  console.log("The amount is: " + amount);
+
   try {
     const options = {
+     
       amount: Number(amount * 100), // Amount in paise (1 Rs = 100 paise)
       currency: "INR",
       receipt: crypto.randomBytes(10).toString("hex"),
+
     };
 
     razorpayInstance.orders.create(options, (error, order) => {
